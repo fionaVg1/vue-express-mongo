@@ -1,47 +1,68 @@
 <template>
-  <div class="hotMovie">
-    <ul class="ui-slide-content">
-      <li class="ui-slide-item" v-for="movie in movies" v-bind:key="movie.name">
-        <ul>
-          <li class="poster">
-            <a :href="movie.href" target="_blank">
-              <img :src="movie.imageSrc">
-            </a>
-          </li>
-          <li class="title">
-            <a :href="movie.href" target="_blank">{{movie.name}}</a>
-          </li>
-          <li class="rating">
-            <span :class="starClass(movie.score)"></span>
-            <span class="subject-rate">{{movie.score}}</span>
-          </li>
-          <li class="ticket_btn">
-            <span>
-              <a :href="movie.href" target="_blank">选座购票</a>
-            </span>
-          </li>
-        </ul>
-      </li>
-    </ul>
+  <div class="hotMovie" >
+    <Swiper
+      v-if="movies.length>0"
+      :autoPlay="true"
+      :showIndicator="true"
+      interval="2500"
+      duration="500"
+      class="ui-slide-content"
+    >
+      <Slide class="ui-slide-item" v-for="(movie,index) in movies" v-bind:key="index">
+        <li class="poster">
+          <a :href="movie.href" target="_blank">
+            <img :src="movie.imageSrc">
+          </a>
+        </li>
+        <li class="title">
+          <a :href="movie.href" target="_blank">{{movie.name}}</a>
+        </li>
+        <li class="rating">
+          <span :class="starClass(movie.score)"></span>
+          <span class="subject-rate">{{movie.score}}</span>
+        </li>
+        <li class="ticket_btn">
+          <span>
+            <a :href="movie.href" target="_blank">选座购票</a>
+          </span>
+        </li>
+      </Slide>
+    </Swiper>
   </div>
 </template>
 <script>
 import axios from "axios";
+import Swiper from "./swiper";
+import Slide from "./slide";
 export default {
   name: "HotMovie",
   data() {
     return {
-      movies: []
+      movies: [],
+      slideWidth:0,
     };
+  },
+  components: {
+    Swiper,
+    Slide
   },
   methods: {
     starClass(score) {
       let scoreFloat = Number.parseFloat(score) * 10;
       let scoreInt = 5 * Number.parseInt((scoreFloat + 4) / 5) - 50;
-      return "rating-star allstar" + scoreInt ;
+      return "rating-star allstar" + scoreInt;
     }
   },
-  computed: {},
+  computed: {
+    slideWidth() {
+      var bodyWidth = window.getComputedStyle(document.querySelector("body"))
+        .width;
+      var bodyWidthInt = Number.parseInt(bodyWidth.replace("px", ""));
+      let remainder = bodyWidthInt % 140;
+      let slideWidth = bodyWidthInt - remainder;
+      return slideWidth;
+    }
+  },
   created() {
     axios
       .get("/api/getHotMovies")
@@ -52,12 +73,27 @@ export default {
         console.log(error);
       })
       .finally();
+  },
+  mounted(){
+    var bodyWidth = window.getComputedStyle(document.querySelector("body"))
+        .width;
+      var bodyWidthInt = Number.parseInt(bodyWidth.replace("px", ""));
+      let remainder = bodyWidthInt % 140;
+      let slideWidth = bodyWidthInt - remainder;
+      document.getElementsByClassName('ui-slide-content')[0].style.width = slideWidth+'px';
   }
 };
 </script>
 <style scoped>
-ul{
-  list-style:none;
+li {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+.title {
+  letter-spacing: -0.31em;
+  font-size: 14px;
+  height: 22px;
 }
 .title a {
   display: inline-block;
@@ -66,6 +102,10 @@ ul{
   word-spacing: normal;
   height: 24px;
   line-height: 24px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100px;
 }
 .title a:link,
 .title a:visited,
@@ -93,6 +133,37 @@ ul{
   background-color: #268dcd;
   color: #fff;
   border-radius: 2px;
+}
+.ui-slide-content {
+  white-space: nowrap;
+  margin: 0 auto;
+  padding: 0;
+}
+.ui-slide-item {
+  font-size: 12px;
+  text-align: center;
+  margin-right: 25px;
+  width: 115px;
+  height: 270px;
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: top;
+  letter-spacing: normal;
+  word-spacing: normal;
+}
+.poster {
+  height: 161px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.poster img {
+  width: 128px;
+}
+.rating {
+  display: inline-block;
+  zoom: 1;
+  margin: 4px auto 2px;
+  height: 19px;
 }
 .allstar50,
 .allstar45,
