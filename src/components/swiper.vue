@@ -203,6 +203,7 @@ a {
   z-index: 1;
   overflow: hidden;
   width: 100%;
+  margin:0 auto;
 }
 
 .wh_swiper {

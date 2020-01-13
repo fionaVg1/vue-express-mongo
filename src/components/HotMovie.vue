@@ -1,12 +1,12 @@
 <template>
-  <div class="hotMovie" >
+  <div class="hotMovie">
     <Swiper
       v-if="movies.length>0"
       :autoPlay="true"
       :showIndicator="true"
-      interval="2500"
-      duration="500"
-      class="ui-slide-content"
+      interval="250000"
+      duration="50000"
+      class="ui-slide-content" :style="slideWidth"
     >
       <Slide class="ui-slide-item" v-for="(movie,index) in movies" v-bind:key="index">
         <li class="poster">
@@ -39,7 +39,7 @@ export default {
   data() {
     return {
       movies: [],
-      slideWidth:0,
+      slideWidth: 0
     };
   },
   components: {
@@ -53,16 +53,6 @@ export default {
       return "rating-star allstar" + scoreInt;
     }
   },
-  computed: {
-    slideWidth() {
-      var bodyWidth = window.getComputedStyle(document.querySelector("body"))
-        .width;
-      var bodyWidthInt = Number.parseInt(bodyWidth.replace("px", ""));
-      let remainder = bodyWidthInt % 140;
-      let slideWidth = bodyWidthInt - remainder;
-      return slideWidth;
-    }
-  },
   created() {
     axios
       .get("/api/getHotMovies")
@@ -74,13 +64,14 @@ export default {
       })
       .finally();
   },
-  mounted(){
+  mounted() {
     var bodyWidth = window.getComputedStyle(document.querySelector("body"))
-        .width;
-      var bodyWidthInt = Number.parseInt(bodyWidth.replace("px", ""));
-      let remainder = bodyWidthInt % 140;
-      let slideWidth = bodyWidthInt - remainder;
-      document.getElementsByClassName('ui-slide-content')[0].style.width = slideWidth+'px';
+      .width;
+    var bodyWidthInt = Number.parseInt(bodyWidth.replace("px", ""));
+    let remainder = bodyWidthInt % 140;
+    let width = bodyWidthInt - remainder;
+    this.slideWidth =
+      "width:" + width + "px";
   }
 };
 </script>
@@ -134,11 +125,7 @@ li {
   color: #fff;
   border-radius: 2px;
 }
-.ui-slide-content {
-  white-space: nowrap;
-  margin: 0 auto;
-  padding: 0;
-}
+
 .ui-slide-item {
   font-size: 12px;
   text-align: center;
@@ -201,7 +188,7 @@ li {
   background: url(../../static/img/ic_rating_s.png) no-repeat;
   background: -webkit-image-set(
       url(../../static/img/ic_rating_s.png) 1x,
-      url(../../static/img/ic_rating_s.png) 2x
+      url(../../static/img/ic_rating_s@2x.png) 2x
     )
     no-repeat;
   background: -moz-image-set(
