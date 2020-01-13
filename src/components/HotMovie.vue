@@ -4,8 +4,8 @@
       v-if="movies.length>0"
       :autoPlay="true"
       :showIndicator="true"
-      interval="250000"
-      duration="50000"
+      interval="2500"
+      duration="500"
       class="ui-slide-content" :style="slideWidth"
     >
       <Slide class="ui-slide-item" v-for="(movie,index) in movies" v-bind:key="index">
